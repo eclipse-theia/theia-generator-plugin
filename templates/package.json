@@ -1,0 +1,59 @@
+{
+      "name": "<%= params.packageName %>",
+      "publisher": "<%= params.publisher %>",
+      "keywords": [
+        "theia-plugin"
+      ],
+      "version": "<%= params.version %>",<% 
+      if (params.description) { %>
+      "description": "<%= params.description %>",
+      <%} %><% 
+      if (params.author) { %>
+      "author": "<%= params.author %>",
+      <% } %><% 
+      if (params.license) { %>
+      "license": "<%= params.license %>",
+      <% } %><% 
+      if (params.githubURL) { %>
+      "repository": {
+        "type": "git",
+        "url": "<%= params.githubURL %>.git"
+      },
+      "bugs": {
+        "url": "<%= params.githubURL %>/issues"
+      },
+      "homepage": "<%= params.githubURL %>",<% } %>
+      "files": [
+        "src"
+      ],
+      "devDependencies": {
+        "@theia/plugin": "<%= params.theiaVersion %>",
+        "rimraf": "^2.6.2",
+        "typescript": "^2.8.1"<%
+        if (params.isFrontend) { %>,
+        "ts-loader": "^4.1.0",
+        "clean-webpack-plugin": "^0.1.19",        
+        "webpack": "^4.1.1",
+        "webpack-cli": "^2.0.12"<% } %>
+      },
+      "scripts": {
+        "prepare": "yarn run clean && yarn run build",
+        "clean": "rimraf lib",<%
+        if (params.isFrontend) { %>
+        "build": "tsc && webpack-cli --config webpack.config.js"
+        <% } %><%
+        if (params.isBackend) { %>
+        "build": "tsc"<% } %>
+      },
+      "engines": {
+        "theiaPlugin": "latest"
+      },
+      "theiaPlugin": {
+          <% if (params.isFrontend) { %>
+            "frontend": "dist/<%= params.pluginDistPath %>"
+          <% } %>
+          <% if (params.isBackend) { %>
+            "backend": "lib/<%= params.pluginDistPath %>"
+          <% } %>
+      }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "@theia/generator-plugin",
+  "version": "0.0.1",
+  "description": "Yeoman generator for plugins used in Theia IDE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eclipse/theia-generator-plugin/"
+  },
+  "bugs": {
+    "url": "https://github.com/eclipse/theia-generator-plugin/issues"
+  },
+  "homepage": "https://github.com/eclipse/theia-generator-plugin",
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "author": "Florent Benoit",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "yeoman-generator": "3.0.0",
+    "yosay": "2.0.2"
+  },
+  "devDependencies": {
+    "@types/yeoman-generator": "2.0.3",
+    "@types/yosay": "0.0.29",
+    "rimraf": "2.6.2",
+    "typescript": "2.8.1"
+  },
+  "files": [
+    "generators",
+    "templates"
+  ],
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc",
+    "watch": "tsc -w"
+  }
+}
