@@ -14,7 +14,7 @@
     "yeoman-generator"
   ],
   "author": "Florent Benoit",
-  "license": "Apache-2.0",
+  "license": "EPL-2.0",
   "dependencies": {
     "yeoman-generator": "3.0.0",
     "yosay": "2.0.2"
