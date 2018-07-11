@@ -100,7 +100,7 @@ module.exports = class TheiaPlugin extends Base {
                 message: "What is the plug-in's name?",
                 default: this.appname // Default to current folder name
             }]);
-            (this.options as any).pluginName = answers.name
+            (this.options as any).pluginName = answers.name;
         }
 
         if (!(this.options as any).pluginType) {
@@ -120,7 +120,7 @@ module.exports = class TheiaPlugin extends Base {
                     }
                 ]
             }]);
-            (this.options as any).pluginType = answers.pluginType
+            (this.options as any).pluginType = answers.pluginType;
         }
 
     }
@@ -131,8 +131,6 @@ module.exports = class TheiaPlugin extends Base {
         );
 
         return Promise.resolve(this.doPrompt());
-
-
 
     }
 
@@ -179,7 +177,7 @@ module.exports = class TheiaPlugin extends Base {
             this.templatePath('README.md'),
             this.destinationPath('README.md'),
             { params: this.params }
-        )
+        );
         this.fs.copyTpl(
             this.templatePath('tsconfig.json'),
             this.destinationPath('tsconfig.json'),
@@ -213,4 +211,4 @@ module.exports = class TheiaPlugin extends Base {
 
     }
 
-}
+};
