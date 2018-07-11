@@ -1,5 +1,5 @@
 # Theia plugin yeoman generator
-A [Yeoman](yeoman.io) generator that scaffolds a project structure for developing extensions to the [Theia IDE](https://github.com/theia-ide/theia).
+A [Yeoman](yeoman.io) generator that scaffolds a project structure for developing plugins to the [Theia IDE](https://github.com/theia-ide/theia).
 
 To use it, install yo and then generator
 
