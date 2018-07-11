@@ -23,7 +23,9 @@
     "@types/yeoman-generator": "2.0.3",
     "@types/yosay": "0.0.29",
     "rimraf": "2.6.2",
-    "typescript": "2.8.1"
+    "tslint": "5.10.0",
+    "typescript": "2.9.2",
+    "typescript-formatter": "7.2.2"
   },
   "files": [
     "generators",
@@ -32,7 +34,11 @@
   "scripts": {
     "prepare": "yarn run clean && yarn run build",
     "clean": "rimraf lib",
-    "build": "tsc",
-    "watch": "tsc -w"
+    "format-code": "tsfmt -r",
+    "build": "yarn run format-code && yarn run compile && yarn run tslint-fix",
+    "compile": "tsc",
+    "watch": "tsc -watch",
+    "tslint-fix": "tslint --fix --project .",
+    "tslint": "tslint --fix --project ."
   }
 }
