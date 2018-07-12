@@ -10,31 +10,16 @@
 
 import yosay = require('yosay');
 import Base = require('yeoman-generator');
-import fs = require("fs");
+import tw = require('./template-writer');
+
 module.exports = class TheiaPlugin extends Base {
 
-    private params!: {
-        author: string;
-        publisher: string;
-        version: string;
-        license: string;
-        pluginName: string;
-        packageName: string;
-        pluginType: string;
-        githubURL: string;
-        frontendModuleName: string;
-        example: boolean;
-        theiaVersion: string;
-        pluginSourcePath: string;
-        pluginDistPath: string;
-        isFrontend: boolean;
-        isBackend: boolean;
-        template: string;
-        sample?: string;
-    };
+    private params!: tw.PluginParams;
+    templateWriter: tw.TemplateWriter;
 
     constructor(args: string | string[], options: any) {
         super(args, options);
+        this.templateWriter = new tw.TemplateWriter(this);
         this.argument('pluginName', {
             type: String,
             required: false,
@@ -229,81 +214,7 @@ module.exports = class TheiaPlugin extends Base {
     }
 
     writing() {
-        this._writeBase();
-        switch (this.params.template) {
-            case 'hello-world':
-                this._writeMain('hello-world.ts');
-                break;
-            case 'skeleton':
-                this._writeMain('empty/index.ts');
-                break;
-            case 'samples':
-                this._writeSample(this.params.sample!);
-                break;
-        }
-
-    }
-
-    private _writeSample(sample: string): void {
-        if (!sample) {
-            sample = (<any>this.options).sample;
-        }
-        const path = 'samples/' + sample + '/';
-
-        this._writeMain(path + 'index.ts');
-        if (fs.readdirSync(this.templatePath(path)).length > 1) {
-            try {
-                this.fs.copyTpl(
-                    this.templatePath(path) + '!(index.ts)',
-                    this.destinationPath('src'),
-                    { params: this.params },
-                    {},
-                    { globOptions: { dot: true } }
-                );
-            } catch (e) {
-                console.debug(e);
-            }
-        }
-    }
-
-    private _writeMain(indexPath: string): void {
-        this.fs.copyTpl(
-            this.templatePath(indexPath),
-            this.destinationPath('src/' + this.params.pluginName + '-' + this.params.pluginType + '-plugin.ts'),
-            { params: this.params }
-        );
-    }
-
-    private _writeBase(): void {
-        this.fs.copyTpl(
-            this.templatePath('base/package.json'),
-            this.destinationPath('package.json'),
-            { params: this.params }
-        );
-        this.fs.copyTpl(
-            this.templatePath('base/gitignore'),
-            this.destinationPath('.gitignore'),
-            { params: this.params }
-        );
-        this.fs.copyTpl(
-            this.templatePath('base/README.md'),
-            this.destinationPath('README.md'),
-            { params: this.params }
-        );
-
-        this.fs.copyTpl(
-            this.templatePath('base/tsconfig.json'),
-            this.destinationPath('tsconfig.json'),
-            { params: this.params }
-        );
-
-        if (this.params.isFrontend) {
-            this.fs.copyTpl(
-                this.templatePath('base/webpack.config.js'),
-                this.destinationPath('webpack.config.js'),
-                { params: this.params }
-            );
-        }
+        this.templateWriter.write(this.params);
     }
 
     install() {

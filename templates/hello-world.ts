@@ -1,6 +1,4 @@
-/**
- * Generated using theia-plugin-generator
- */
+<%- include('base/ts-header.ts'); %>
 import * as theia from '@theia/plugin';
 
 export function start() {
