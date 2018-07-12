@@ -28,6 +28,8 @@ module.exports = class TheiaPlugin extends Base {
         pluginDistPath: string;
         isFrontend: boolean;
         isBackend: boolean;
+        template: string;
+        sample?: string;
     };
 
     constructor(args: string | string[], options: any) {
@@ -81,6 +83,17 @@ module.exports = class TheiaPlugin extends Base {
             type: String,
             default: 'next'
         });
+
+        this.option('template', {
+            alias: 'tpl',
+            description: 'Generate from template',
+            type: String,
+        });
+        this.option('sample', {
+            alias: 's',
+            description: 'Sample type',
+            type: String
+        });
     }
 
     path() {
@@ -123,6 +136,56 @@ module.exports = class TheiaPlugin extends Base {
             (this.options as any).pluginType = answers.pluginType;
         }
 
+        if (!(this.options as any).template) {
+            const answers = await this.prompt([{
+                type: 'list',
+                name: 'template',
+                message: 'Please, choose the template:',
+                choices: [
+                    {
+                        name: 'Hello World plugin',
+                        value: 'hello-world'
+                    },
+                    {
+                        name: 'Skeleton plugin',
+                        value: 'skeleton'
+                    },
+                    {
+                        name: 'Samples',
+                        value: 'samples'
+                    }
+                ]
+            }]);
+            (this.options as any).template = answers.template;
+        }
+
+        if (!(this.options as any).sample && (this.options as any).template === 'samples') {
+            const answers = await this.prompt([{
+                type: 'list',
+                name: 'sample',
+                message: 'Please, choose the sample:',
+                choices: [
+                    {
+                        name: 'Commands API sample',
+                        value: 'commands'
+                    },
+                    {
+                        name: 'Information message sample',
+                        value: 'messageInformation'
+                    },
+                    {
+                        name: 'Quick Pick sample',
+                        value: 'quickPick'
+                    },
+                    {
+                        name: 'Status bar item sample',
+                        value: 'statusBar'
+                    }
+                ]
+            }]);
+            (this.options as any).sample = answers.sample;
+        }
+
     }
 
     prompting() {
@@ -156,41 +219,84 @@ module.exports = class TheiaPlugin extends Base {
             pluginSourcePath: pluginName + '-' + pluginType + '-plugin.ts',
             pluginDistPath: pluginName + '-' + pluginType + '-plugin.js',
             isFrontend: (options.pluginType === 'frontend'),
-            isBackend: (options.pluginType === 'backend')
+            isBackend: (options.pluginType === 'backend'),
+            template: options.template,
+            sample: options.sample,
         };
         options.params = this.params;
 
     }
 
     writing() {
+        this._writeBase();
+        switch (this.params.template) {
+            case 'hello-world':
+                this._writeMain('hello-world.ts');
+                break;
+            case 'skeleton':
+                this._writeMain('empty/index.ts');
+                break;
+            case 'samples':
+                this._writeSample(this.params.sample!);
+                break;
+        }
+
+    }
+
+    private _writeSample(sample: string): void {
+        if (!sample) {
+            sample = (<any>this.options).sample;
+        }
+        const path = 'samples/' + sample + '/';
+
+        this._writeMain(path + 'index.ts');
+        try {
+            this.fs.copyTpl(
+                this.templatePath(path) + '!(index.ts)',
+                this.destinationPath('src'),
+                { params: this.params },
+                {},
+                { globOptions: { dot: true } }
+            );
+        } catch (e) {
+            // ignore copy errors if template doesn't have others files
+        }
+    }
+
+    private _writeMain(indexPath: string): void {
         this.fs.copyTpl(
-            this.templatePath('package.json'),
+            this.templatePath(indexPath),
+            this.destinationPath('src/' + this.params.pluginName + '-' + this.params.pluginType + '-plugin.ts'),
+            { params: this.params }
+        );
+    }
+
+    private _writeBase(): void {
+        this.fs.copyTpl(
+            this.templatePath('base/package.json'),
             this.destinationPath('package.json'),
             { params: this.params }
         );
         this.fs.copyTpl(
-            this.templatePath('gitignore'),
+            this.templatePath('base/gitignore'),
             this.destinationPath('.gitignore'),
             { params: this.params }
         );
         this.fs.copyTpl(
-            this.templatePath('README.md'),
+            this.templatePath('base/README.md'),
             this.destinationPath('README.md'),
             { params: this.params }
         );
+
         this.fs.copyTpl(
-            this.templatePath('tsconfig.json'),
+            this.templatePath('base/tsconfig.json'),
             this.destinationPath('tsconfig.json'),
             { params: this.params }
         );
-        this.fs.copyTpl(
-            this.templatePath('hello-world.ts'),
-            this.destinationPath('src/' + this.params.pluginName + '-' + this.params.pluginType + '-plugin.ts'),
-            { params: this.params }
-        );
+
         if (this.params.isFrontend) {
             this.fs.copyTpl(
-                this.templatePath('webpack.config.js'),
+                this.templatePath('base/webpack.config.js'),
                 this.destinationPath('webpack.config.js'),
                 { params: this.params }
             );

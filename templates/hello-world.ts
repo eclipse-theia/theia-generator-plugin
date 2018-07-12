@@ -1,6 +1,6 @@
 /**
  * Generated using theia-plugin-generator
- */ 
+ */
 import * as theia from '@theia/plugin';
 
 export function start() {
@@ -11,7 +11,6 @@ export function start() {
     theia.commands.registerCommand(informationMessageTestCommand, (...args: any[]) => {
         theia.window.showInformationMessage('Hello World!');
     });
-
 
 }
 
