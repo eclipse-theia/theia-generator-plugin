@@ -8,12 +8,12 @@ const disposables: theia.Disposable[] = [];
 export function start() {
     // Hello World command
     const command: theia.Command = {
-        id: 'simple-command',
-        label: 'Hello World command'
+        id: 'template-command',
+        label: 'Hello Template command'
     };
     disposables.push(
         theia.commands.registerCommand(command, (...args: any[]) => {
-            console.log(`Hello World command handler was called with arguments: `, args);
+            theia.window.showInformationMessage(`Hello World command handler was called with arguments: ${args}`);
         })
     );
 }

@@ -14,18 +14,18 @@ export function start() {
         id: 'information-modal-message-command',
         label: 'Information Modal Message',
     };
-    
+
     disposables.push(
         theia.commands.registerCommand(informationCommand, async (...args: any[]) => {
             const action = await theia.window.showInformationMessage('Information message!');
-            console.log('Close information message', 'Resolve', action);
+            theia.window.showInformationMessage('Close information message ' + action!);
         })
     );
 
     disposables.push(theia.commands.registerCommand(informationModalCommand, async (...args: any[]) => {
             const action = await theia.window.showInformationMessage('Information modal message!', { modal: true },
                 { title: 'action1' }, { title: 'action2', isCloseAffordance: true }, { title: 'action3' });
-            console.log('Resolve', action);
+                theia.window.showInformationMessage('Resolve ' + action!.title);
         })
     );
 }

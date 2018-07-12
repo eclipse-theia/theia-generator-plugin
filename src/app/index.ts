@@ -10,6 +10,7 @@
 
 import yosay = require('yosay');
 import Base = require('yeoman-generator');
+import fs = require("fs");
 module.exports = class TheiaPlugin extends Base {
 
     private params!: {
@@ -41,7 +42,7 @@ module.exports = class TheiaPlugin extends Base {
 
         this.option('pluginType', {
             alias: 't',
-            description: 'Type of the plugin [backend, frontend]',
+            description: 'Type of the plug-in [backend, frontend]',
             type: String,
         });
 
@@ -140,14 +141,14 @@ module.exports = class TheiaPlugin extends Base {
             const answers = await this.prompt([{
                 type: 'list',
                 name: 'template',
-                message: 'Please, choose the template:',
+                message: 'Please, choose a template:',
                 choices: [
                     {
-                        name: 'Hello World plugin',
+                        name: 'Hello World plug-in',
                         value: 'hello-world'
                     },
                     {
-                        name: 'Skeleton plugin',
+                        name: 'Skeleton plug-in',
                         value: 'skeleton'
                     },
                     {
@@ -166,20 +167,20 @@ module.exports = class TheiaPlugin extends Base {
                 message: 'Please, choose the sample:',
                 choices: [
                     {
-                        name: 'Commands API sample',
+                        name: 'Commands sample',
                         value: 'commands'
                     },
                     {
-                        name: 'Information message sample',
-                        value: 'messageInformation'
+                        name: 'Information Message sample',
+                        value: 'message-information'
                     },
                     {
                         name: 'Quick Pick sample',
-                        value: 'quickPick'
+                        value: 'quick-pick'
                     },
                     {
-                        name: 'Status bar item sample',
-                        value: 'statusBar'
+                        name: 'Status Bar item sample',
+                        value: 'status-bar'
                     }
                 ]
             }]);
@@ -250,16 +251,18 @@ module.exports = class TheiaPlugin extends Base {
         const path = 'samples/' + sample + '/';
 
         this._writeMain(path + 'index.ts');
-        try {
-            this.fs.copyTpl(
-                this.templatePath(path) + '!(index.ts)',
-                this.destinationPath('src'),
-                { params: this.params },
-                {},
-                { globOptions: { dot: true } }
-            );
-        } catch (e) {
-            // ignore copy errors if template doesn't have others files
+        if (fs.readdirSync(this.templatePath(path)).length > 1) {
+            try {
+                this.fs.copyTpl(
+                    this.templatePath(path) + '!(index.ts)',
+                    this.destinationPath('src'),
+                    { params: this.params },
+                    {},
+                    { globOptions: { dot: true } }
+                );
+            } catch (e) {
+                console.debug(e);
+            }
         }
     }
 
