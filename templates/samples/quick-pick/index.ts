@@ -17,7 +17,7 @@ export function start() {
                     machOnDetail: true,
                     canPickMany: false,
                     placeHolder: 'Select string:',
-                    onDidSelectItem: (item: string) => console.log(`Item ${item} is selected`)
+                    onDidSelectItem: (item: string) => theia.window.showInformationMessage(`Item ${item} is selected`)
                 }).then((val: string | undefined) => {
                     theia.window.showInformationMessage(`Quick Pick Selected: ${val}`);
                 });
@@ -55,7 +55,7 @@ export function start() {
                 machOnDetail: true,
                 canPickMany: false,
                 placeHolder: 'Select object:',
-                onDidSelectItem: (item: theia.QuickPickItem) => console.log(`Item ${JSON.stringify(item)} is selected`)
+                onDidSelectItem: (item: theia.QuickPickItem) => theia.window.showInformationMessage(`Item ${JSON.stringify(item)} is selected`)
             }).then((val: theia.QuickPickItem | undefined) => {
                 theia.window.showInformationMessage(`Quick Pick Object Selected: ${JSON.stringify(val)}`);
             });
