@@ -10,28 +10,16 @@
 
 import yosay = require('yosay');
 import Base = require('yeoman-generator');
+import tw = require('./template-writer');
+
 module.exports = class TheiaPlugin extends Base {
 
-    private params!: {
-        author: string;
-        publisher: string;
-        version: string;
-        license: string;
-        pluginName: string;
-        packageName: string;
-        pluginType: string;
-        githubURL: string;
-        frontendModuleName: string;
-        example: boolean;
-        theiaVersion: string;
-        pluginSourcePath: string;
-        pluginDistPath: string;
-        isFrontend: boolean;
-        isBackend: boolean;
-    };
+    private params!: tw.PluginParams;
+    templateWriter: tw.TemplateWriter;
 
     constructor(args: string | string[], options: any) {
         super(args, options);
+        this.templateWriter = new tw.TemplateWriter(this);
         this.argument('pluginName', {
             type: String,
             required: false,
@@ -39,7 +27,7 @@ module.exports = class TheiaPlugin extends Base {
 
         this.option('pluginType', {
             alias: 't',
-            description: 'Type of the plugin [backend, frontend]',
+            description: 'Type of the plug-in [backend, frontend]',
             type: String,
         });
 
@@ -80,6 +68,17 @@ module.exports = class TheiaPlugin extends Base {
             description: 'The version of Theia to use',
             type: String,
             default: 'next'
+        });
+
+        this.option('template', {
+            alias: 'tpl',
+            description: 'Generate from template',
+            type: String,
+        });
+        this.option('sample', {
+            alias: 's',
+            description: 'Sample type',
+            type: String
         });
     }
 
@@ -123,6 +122,56 @@ module.exports = class TheiaPlugin extends Base {
             (this.options as any).pluginType = answers.pluginType;
         }
 
+        if (!(this.options as any).template) {
+            const answers = await this.prompt([{
+                type: 'list',
+                name: 'template',
+                message: 'Please, choose a template:',
+                choices: [
+                    {
+                        name: 'Hello World plug-in',
+                        value: 'hello-world'
+                    },
+                    {
+                        name: 'Skeleton plug-in',
+                        value: 'skeleton'
+                    },
+                    {
+                        name: 'Samples',
+                        value: 'samples'
+                    }
+                ]
+            }]);
+            (this.options as any).template = answers.template;
+        }
+
+        if (!(this.options as any).sample && (this.options as any).template === 'samples') {
+            const answers = await this.prompt([{
+                type: 'list',
+                name: 'sample',
+                message: 'Please, choose the sample:',
+                choices: [
+                    {
+                        name: 'Commands sample',
+                        value: 'commands'
+                    },
+                    {
+                        name: 'Information Message sample',
+                        value: 'message-information'
+                    },
+                    {
+                        name: 'Quick Pick sample',
+                        value: 'quick-pick'
+                    },
+                    {
+                        name: 'Status Bar item sample',
+                        value: 'status-bar'
+                    }
+                ]
+            }]);
+            (this.options as any).sample = answers.sample;
+        }
+
     }
 
     prompting() {
@@ -156,45 +205,16 @@ module.exports = class TheiaPlugin extends Base {
             pluginSourcePath: pluginName + '-' + pluginType + '-plugin.ts',
             pluginDistPath: pluginName + '-' + pluginType + '-plugin.js',
             isFrontend: (options.pluginType === 'frontend'),
-            isBackend: (options.pluginType === 'backend')
+            isBackend: (options.pluginType === 'backend'),
+            template: options.template,
+            sample: options.sample,
         };
         options.params = this.params;
 
     }
 
     writing() {
-        this.fs.copyTpl(
-            this.templatePath('package.json'),
-            this.destinationPath('package.json'),
-            { params: this.params }
-        );
-        this.fs.copyTpl(
-            this.templatePath('gitignore'),
-            this.destinationPath('.gitignore'),
-            { params: this.params }
-        );
-        this.fs.copyTpl(
-            this.templatePath('README.md'),
-            this.destinationPath('README.md'),
-            { params: this.params }
-        );
-        this.fs.copyTpl(
-            this.templatePath('tsconfig.json'),
-            this.destinationPath('tsconfig.json'),
-            { params: this.params }
-        );
-        this.fs.copyTpl(
-            this.templatePath('hello-world.ts'),
-            this.destinationPath('src/' + this.params.pluginName + '-' + this.params.pluginType + '-plugin.ts'),
-            { params: this.params }
-        );
-        if (this.params.isFrontend) {
-            this.fs.copyTpl(
-                this.templatePath('webpack.config.js'),
-                this.destinationPath('webpack.config.js'),
-                { params: this.params }
-            );
-        }
+        this.templateWriter.write(this.params);
     }
 
     install() {
