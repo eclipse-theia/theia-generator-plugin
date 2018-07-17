@@ -84,6 +84,12 @@ export class TemplateWriter {
             { params: params }
         );
 
+        this.generator.fs.copyTpl(
+            this.generator.templatePath('base/tsfmt.json'),
+            this.generator.destinationPath('tsfmt.json'),
+            { params: params }
+        );
+
         if (params.isFrontend) {
             this.generator.fs.copyTpl(
                 this.generator.templatePath('base/webpack.config.js'),
