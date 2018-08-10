@@ -10,9 +10,15 @@
 
 import yosay = require('yosay');
 import Base = require('yeoman-generator');
+import path = require('path');
 import tw = require('./template-writer');
 
 module.exports = class TheiaPlugin extends Base {
+
+    static const SUPPORTED_LICENSES = [
+        'MIT',
+        'EPL-2.0'
+    ];
 
     private params!: tw.PluginParams;
     templateWriter: tw.TemplateWriter;
@@ -185,16 +191,35 @@ module.exports = class TheiaPlugin extends Base {
 
     configuring() {
         const options = this.options as any;
+        const creationYear = new Date().getFullYear().toString();
         const pluginName = (options.pluginName as string).replace(/\W/g, '-');
         const pluginType = options.pluginType as string;
         const packageName = pluginName + '-plugin';
         const publisher = options.publisher ? options.publisher as string : 'theia';
         const frontendModuleName = `${publisher}_${packageName}`.replace(/\W/g, '_');
+
+        let licenseId = options.license;
+        let header: string;
+        if (!licenseId || TheiaPlugin.SUPPORTED_LICENSES.indexOf(licenseId) === -1) {
+            if (licenseId) {
+                console.warn('License ID "' + licenseId + '" is not supported.');
+            } else {
+                console.warn('License is not specified. You can do it via --license parameter.');
+            }
+            licenseId = 'none';
+            header = '';
+        } else {
+            header = this.fs.read(path.resolve(__dirname, '../../', 'templates/licenses/', licenseId, 'license-header'));
+            header = header.replace(/{author}/g, options.author);
+            header = header.replace(/{date}/g, creationYear);
+        }
+
         this.params = {
             author: options.author,
             publisher: publisher,
             version: options.version,
-            license: options.license,
+            license: { id: licenseId, header: header },
+            creationYear: creationYear,
             pluginName: pluginName,
             packageName: packageName,
             pluginType: pluginType,

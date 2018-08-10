@@ -97,6 +97,14 @@ export class TemplateWriter {
                 { params: params }
             );
         }
+
+        if (params.license.id !== 'none') {
+            this.generator.fs.copyTpl(
+                this.generator.templatePath('licenses/' + params.license.id + '/license'),
+                this.generator.destinationPath('LICENSE'),
+                { params: params }
+            );
+        }
     }
 }
 
@@ -104,7 +112,8 @@ export interface PluginParams {
     author: string;
     publisher: string;
     version: string;
-    license: string;
+    license: License;
+    creationYear: string;
     pluginName: string;
     packageName: string;
     pluginType: string;
@@ -118,4 +127,9 @@ export interface PluginParams {
     isBackend: boolean;
     template: string;
     sample?: string;
+}
+
+export interface License {
+    id: string; // SPDX license id
+    header: string;
 }
