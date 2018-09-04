@@ -43,6 +43,8 @@ module.exports = {
         path: path.resolve(__dirname, 'dist')
     },
     externals: {
-		"@theia/plugin": "theia"
+        <% if (params.isFrontend) { %>
+            "@theia/plugin": "theia.<%= params.frontendModuleName %>"
+        <%} %>
 	}
 };
