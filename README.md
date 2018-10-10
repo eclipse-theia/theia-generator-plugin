@@ -18,6 +18,22 @@ For configuration options, see
 yo @theia/plugin --help 
 ```
 
+## Developer
+
+In order to try/develop this generator, let assume there is no global @theia/generator-plugin installed.
+
+Then, compile this project by using
+```
+yarn
+```
+
+You only have to use
+```
+yo @theia/plugin
+```
+
+to try your newly version that you've compiled
+
 ## License
 
 [EPL-2.0](LICENSE)
