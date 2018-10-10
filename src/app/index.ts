@@ -233,6 +233,7 @@ module.exports = class TheiaPlugin extends Base {
             isBackend: (options.pluginType === 'backend'),
             template: options.template,
             sample: options.sample,
+            distFolder: pluginName,
         };
         options.params = this.params;
 
@@ -245,9 +246,10 @@ module.exports = class TheiaPlugin extends Base {
     install() {
         this.log('Installing dependencies with yarn...');
         const result = this.spawnCommandSync('yarn', [], {
-            cwd: (this.options as any).cwd,
+            cwd: this.params.distFolder, /* use the generated plugin-path */
             stdio: 'pipe'
         });
+
         if (result.err) {
             this.log('' + result.stderr);
         } else {
