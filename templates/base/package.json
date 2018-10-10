@@ -12,7 +12,7 @@
       "author": "<%= params.author %>",
       <% } %><% 
       if (params.license) { %>
-      "license": "<%= params.license %>",
+      "license": "<%= params.license.id %>",
       <% } %><% 
       if (params.githubURL) { %>
       "repository": {
