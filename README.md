@@ -20,7 +20,7 @@ yo @theia/plugin --help
 
 ## Developer
 
-In order to try/develop this generator, let assume there is no global @theia/generator-plugin installed.
+In order to try/develop this generator, let assume there is no module `@theia/generator-plugin` installed at global state.
 
 Then, compile this project by using
 ```
