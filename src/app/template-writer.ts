@@ -16,6 +16,10 @@ export class TemplateWriter {
     constructor(private readonly generator: Base) {
     }
 
+    pluginPath(params: PluginParams, path: string): string {
+        return this.generator.destinationPath(params.distFolder + '/' + path);
+    }
+
     write(params: PluginParams): void {
         this.writeBase(params);
         switch (params.template) {
@@ -42,7 +46,7 @@ export class TemplateWriter {
             try {
                 this.generator.fs.copyTpl(
                     this.generator.templatePath(path) + '!(index.ts)',
-                    this.generator.destinationPath('src'),
+                    this.pluginPath(params, 'src'),
                     { params: params },
                     {},
                     { globOptions: { dot: true } }
@@ -56,7 +60,7 @@ export class TemplateWriter {
     private writeMain(indexPath: string, params: PluginParams): void {
         this.generator.fs.copyTpl(
             this.generator.templatePath(indexPath),
-            this.generator.destinationPath('src/' + params.pluginName + '-' + params.pluginType + '-plugin.ts'),
+            this.pluginPath(params, 'src/' + params.pluginSourcePath),
             { params: params }
         );
     }
@@ -64,36 +68,36 @@ export class TemplateWriter {
     private writeBase(params: PluginParams): void {
         this.generator.fs.copyTpl(
             this.generator.templatePath('base/package.json'),
-            this.generator.destinationPath('package.json'),
+            this.pluginPath(params, 'package.json'),
             { params: params }
         );
         this.generator.fs.copyTpl(
             this.generator.templatePath('base/gitignore'),
-            this.generator.destinationPath('.gitignore'),
+            this.pluginPath(params, '.gitignore'),
             { params: params }
         );
         this.generator.fs.copyTpl(
             this.generator.templatePath('base/README.md'),
-            this.generator.destinationPath('README.md'),
+            this.pluginPath(params, 'README.md'),
             { params: params }
         );
 
         this.generator.fs.copyTpl(
             this.generator.templatePath('base/tsconfig.json'),
-            this.generator.destinationPath('tsconfig.json'),
+            this.pluginPath(params, 'tsconfig.json'),
             { params: params }
         );
 
         this.generator.fs.copyTpl(
             this.generator.templatePath('base/tsfmt.json'),
-            this.generator.destinationPath('tsfmt.json'),
+            this.pluginPath(params, 'tsfmt.json'),
             { params: params }
         );
 
         if (params.isFrontend) {
             this.generator.fs.copyTpl(
                 this.generator.templatePath('base/webpack.config.js'),
-                this.generator.destinationPath('webpack.config.js'),
+                this.pluginPath(params, 'webpack.config.js'),
                 { params: params }
             );
         }
@@ -101,7 +105,7 @@ export class TemplateWriter {
         if (params.license.id !== 'none') {
             this.generator.fs.copyTpl(
                 this.generator.templatePath('licenses/' + params.license.id + '/license'),
-                this.generator.destinationPath('LICENSE'),
+                this.pluginPath(params, 'LICENSE'),
                 { params: params }
             );
         }
@@ -127,6 +131,8 @@ export interface PluginParams {
     isBackend: boolean;
     template: string;
     sample?: string;
+    distFolder: string;
+
 }
 
 export interface License {
