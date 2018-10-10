@@ -1,10 +1,8 @@
 <%- include('../../base/ts-header.ts'); %>
 import * as theia from '@theia/plugin';
 
-const disposables: theia.Disposable[] = [];
-
-export function start() {
-    registerCommand({
+export function start(context: theia.PluginContext) {
+    registerCommand(context, {
         id: 'status_bar-message-command-timeout',
         label: 'Status Bar Message With Timeout 5s',
         callback: () => {
@@ -12,7 +10,7 @@ export function start() {
         }
     });
 
-    registerCommand({
+    registerCommand(context, {
         id: 'status_bar-message-command-promise',
         label: 'Status Bar Message With Promise 5s',
         callback: () => {
@@ -21,7 +19,7 @@ export function start() {
         }
     });
 
-    registerCommand({
+    registerCommand(context, {
         id: 'status_bar-message-command-disposable',
         label: 'Status Bar Message With Disposable 5s',
         callback: async () => {
@@ -31,7 +29,7 @@ export function start() {
         }
     });
 
-    registerCommand({
+    registerCommand(context, {
         id: 'status_bar_item-command',
         label: 'Status Bar Item With Timeout 15',
         callback: async () => {
@@ -50,8 +48,8 @@ function sleep(time: number) {
     return new Promise(resolve => setTimeout(resolve, time));
 }
 
-function registerCommand(command: { id: string, label: string, callback: (...args: any[]) => any }): void {
-    disposables.push(
+function registerCommand(context: theia.PluginContext, command: { id: string, label: string, callback: (...args: any[]) => any }): void {
+    context.subscriptions.push(
         theia.commands.registerCommand({
             id: command.id,
             label: command.label
@@ -60,10 +58,5 @@ function registerCommand(command: { id: string, label: string, callback: (...arg
 }
 
 export function stop() {
-    while (disposables.length) {
-        const disposable = disposables.pop();
-        if (disposable) {
-            disposable.dispose();
-        }
-    }
+
 }

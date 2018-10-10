@@ -1,10 +1,8 @@
 <%- include('../../base/ts-header.ts'); %>
 import * as theia from '@theia/plugin';
 
-const disposables: theia.Disposable[] = [];
-
-export function start() {
-    disposables.push(
+export function start(context: theia.PluginContext) {
+    context.subscriptions.push(
         theia.commands.registerCommand({
                 id: 'quick-pick-string-command',
                 label: 'Quick Pick String Items',
@@ -24,7 +22,7 @@ export function start() {
             })
     );
 
-    disposables.push(
+    context.subscriptions.push(
         theia.commands.registerCommand({
             id: 'quick-pick-object-command',
             label: 'Quick Pick Object Item'
@@ -68,10 +66,4 @@ function sleep(time: number) {
 }
 
 export function stop() {
-    while (disposables.length) {
-        const disposable = disposables.pop();
-        if (disposable) {
-            disposable.dispose();
-        }
-    }
 }
