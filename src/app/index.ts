@@ -194,7 +194,7 @@ module.exports = class TheiaPlugin extends Base {
         const creationYear = new Date().getFullYear().toString();
         const pluginName = (options.pluginName as string).replace(/\W/g, '-');
         const pluginType = options.pluginType as string;
-        const packageName = pluginName + '-plugin';
+        const packageName = pluginName;
         const publisher = options.publisher ? options.publisher as string : 'theia';
         const frontendModuleName = `${publisher}_${packageName}`.replace(/\W/g, '_');
 
