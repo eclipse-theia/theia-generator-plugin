@@ -245,13 +245,15 @@ module.exports = class TheiaPlugin extends Base {
 
     install() {
         this.log('Installing dependencies with yarn...');
+        const folderToUse = this.destinationPath(this.params.distFolder);
         const result = this.spawnCommandSync('yarn', [], {
-            cwd: this.params.distFolder, /* use the generated plugin-path */
-            stdio: 'pipe'
+            cwd: folderToUse, /* use the generated plugin-path */
+            stdio: 'pipe',
+            stderr: 'pipe'
         });
 
-        if (result.err) {
-            this.log('' + result.stderr);
+        if (result.error) {
+            this.log('' + result.error);
         } else {
             this.log('' + result.stdout);
         }
