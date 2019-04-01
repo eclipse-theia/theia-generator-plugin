@@ -42,10 +42,18 @@ export class TemplateWriter {
         const path = 'samples/' + sample + '/';
 
         this.writeMain(path + 'index.ts', params);
+        if (fs.existsSync(this.generator.templatePath(path) + 'package.json')) {
+            this.generator.fs.copyTpl(
+                this.generator.templatePath(path) + 'package.json',
+                this.pluginPath(params, 'package.json'),
+                { params: params }
+            );
+        }
+
         if (fs.readdirSync(this.generator.templatePath(path)).length > 1) {
             try {
                 this.generator.fs.copyTpl(
-                    this.generator.templatePath(path) + '!(index.ts)',
+                    this.generator.templatePath(path) + '!(index.ts|package.json)',
                     this.pluginPath(params, 'src'),
                     { params: params },
                     {},
