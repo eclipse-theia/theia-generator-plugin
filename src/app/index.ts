@@ -172,6 +172,10 @@ module.exports = class TheiaPlugin extends Base {
                     {
                         name: 'Status Bar item sample',
                         value: 'status-bar'
+                    },
+                    {
+                        name: 'Debugger sample',
+                        value: 'debugger'
                     }
                 ]
             }]);
