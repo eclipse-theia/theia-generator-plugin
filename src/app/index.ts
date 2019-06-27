@@ -176,6 +176,10 @@ module.exports = class TheiaPlugin extends Base {
                     {
                         name: 'Debugger sample',
                         value: 'debugger'
+                    },
+                    {
+                        name: 'Language sample',
+                        value: 'language'
                     }
                 ]
             }]);
