@@ -26,6 +26,9 @@
       "files": [
         "src"
       ],
+      "activationEvents": [
+        "*"
+      ],
       "devDependencies": {
         "@theia/plugin": "<%= params.theiaVersion %>",
         "@theia/plugin-packager": "latest",
