@@ -11,8 +11,8 @@ export function start(context: theia.PluginContext) {
                     await sleep(500);
                     resolve(['foo' + Math.round(Math.random() * 10), 'bar', 'foobar']);
                 }), {
-                    machOnDescription: true,
-                    machOnDetail: true,
+                    matchOnDescription: true,
+                    matchOnDetail: true,
                     canPickMany: false,
                     placeHolder: 'Select string:',
                     onDidSelectItem: (item: string) => theia.window.showInformationMessage(`Item ${item} is selected`)
@@ -49,8 +49,8 @@ export function start(context: theia.PluginContext) {
                     }
                 ]);
             }), {
-                machOnDescription: true,
-                machOnDetail: true,
+                matchOnDescription: true,
+                matchOnDetail: true,
                 canPickMany: false,
                 placeHolder: 'Select object:',
                 onDidSelectItem: (item: theia.QuickPickItem) => theia.window.showInformationMessage(`Item ${JSON.stringify(item)} is selected`)
