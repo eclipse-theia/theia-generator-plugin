@@ -21,7 +21,7 @@ module.exports = {
                 test: /\.ts$/,
                 use: [
                     {
-                        loader: 'ts-loader',
+                        loader: 'ts-loader'
                     }
                 ],
                 exclude: /node_modules/
@@ -35,16 +35,14 @@ module.exports = {
         extensions: ['.ts', '.js']
     },
     output: {
-        filename: '<%= params.pluginDistPath %>',
-        <% if (params.isFrontend) { %>
+        filename: '<%= params.pluginDistPath %>', <%
+        if (params.isFrontend) { %>
         libraryTarget: "var",
-        library: "<%= params.frontendModuleName %>",
-        <%} %>        
+        library: "<%= params.frontendModuleName %>", <%} %>
         path: path.resolve(__dirname, 'dist')
     },
-    externals: {
-        <% if (params.isFrontend) { %>
-            "@theia/plugin": "theia.<%= params.frontendModuleName %>"
-        <%} %>
-	}
+    externals: { <%
+        if (params.isFrontend) { %>
+        "@theia/plugin": "theia.<%= params.frontendModuleName %>" <%} %>
+    }
 };
